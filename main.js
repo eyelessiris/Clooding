@@ -1581,29 +1581,31 @@ function checkIncomingModuleAPI() {
 }
 
 // Imports from the Wasm binary.
-var _get_schedule_json = Module['_get_schedule_json'] = makeInvalidEarlyAccess('_get_schedule_json');
+var _login_user = Module['_login_user'] = makeInvalidEarlyAccess('_login_user');
+var _get_schedule_by_class = Module['_get_schedule_by_class'] = makeInvalidEarlyAccess('_get_schedule_by_class');
 var _get_meal_json = Module['_get_meal_json'] = makeInvalidEarlyAccess('_get_meal_json');
-var _get_profile_json = Module['_get_profile_json'] = makeInvalidEarlyAccess('_get_profile_json');
 var _get_dorm_status_json = Module['_get_dorm_status_json'] = makeInvalidEarlyAccess('_get_dorm_status_json');
+var _get_day_of_week_string = Module['_get_day_of_week_string'] = makeInvalidEarlyAccess('_get_day_of_week_string');
 var _fflush = makeInvalidEarlyAccess('_fflush');
+var _emscripten_stack_get_end = makeInvalidEarlyAccess('_emscripten_stack_get_end');
+var _emscripten_stack_get_base = makeInvalidEarlyAccess('_emscripten_stack_get_base');
 var _emscripten_stack_init = makeInvalidEarlyAccess('_emscripten_stack_init');
 var _emscripten_stack_get_free = makeInvalidEarlyAccess('_emscripten_stack_get_free');
-var _emscripten_stack_get_base = makeInvalidEarlyAccess('_emscripten_stack_get_base');
-var _emscripten_stack_get_end = makeInvalidEarlyAccess('_emscripten_stack_get_end');
 var __emscripten_stack_restore = makeInvalidEarlyAccess('__emscripten_stack_restore');
 var __emscripten_stack_alloc = makeInvalidEarlyAccess('__emscripten_stack_alloc');
 var _emscripten_stack_get_current = makeInvalidEarlyAccess('_emscripten_stack_get_current');
 
 function assignWasmExports(wasmExports) {
-  Module['_get_schedule_json'] = _get_schedule_json = createExportWrapper('get_schedule_json', 0);
+  Module['_login_user'] = _login_user = createExportWrapper('login_user', 2);
+  Module['_get_schedule_by_class'] = _get_schedule_by_class = createExportWrapper('get_schedule_by_class', 1);
   Module['_get_meal_json'] = _get_meal_json = createExportWrapper('get_meal_json', 0);
-  Module['_get_profile_json'] = _get_profile_json = createExportWrapper('get_profile_json', 0);
   Module['_get_dorm_status_json'] = _get_dorm_status_json = createExportWrapper('get_dorm_status_json', 0);
+  Module['_get_day_of_week_string'] = _get_day_of_week_string = createExportWrapper('get_day_of_week_string', 1);
   _fflush = createExportWrapper('fflush', 1);
+  _emscripten_stack_get_end = wasmExports['emscripten_stack_get_end'];
+  _emscripten_stack_get_base = wasmExports['emscripten_stack_get_base'];
   _emscripten_stack_init = wasmExports['emscripten_stack_init'];
   _emscripten_stack_get_free = wasmExports['emscripten_stack_get_free'];
-  _emscripten_stack_get_base = wasmExports['emscripten_stack_get_base'];
-  _emscripten_stack_get_end = wasmExports['emscripten_stack_get_end'];
   __emscripten_stack_restore = wasmExports['_emscripten_stack_restore'];
   __emscripten_stack_alloc = wasmExports['_emscripten_stack_alloc'];
   _emscripten_stack_get_current = wasmExports['emscripten_stack_get_current'];

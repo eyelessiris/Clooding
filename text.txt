@@ -20,35 +20,26 @@
     padding: 20px 40px;
     background-color: #4f6ef7;
     color: white;
-    box-sizing: border-box;
-    position: relative; /* 자식 요소의 absolute 위치 기준이 됨 */
   }
 
   .logo {
     font-weight: 700;
     font-size: 32px;
-    flex-shrink: 0; /* 크기 줄어들지 않도록 */
-    /* 로고는 왼쪽 끝에 자연스럽게 위치 */
   }
 
   nav {
-    /* 이 부분이 메뉴를 정중앙에 배치하는 핵심 */
-    position: absolute;   /* flex 흐름에서 제외하고 절대 위치 지정 */
-    left: 50%;            /* 부모(header)의 50% 지점으로 이동 */
-    transform: translateX(-50%); /* 자신의 너비의 절반만큼 왼쪽으로 이동하여 정확히 중앙 정렬 */
-
-    display: flex;        /* 메뉴 아이템들은 여전히 flex로 정렬 */
+    flex: 1;
+    display: flex;
+    justify-content: center;
     gap: 32px;
     font-size: 18px;
-    /* flex: 1; 같은 속성은 이제 필요 없음 */
   }
-
 
   nav a {
     color: white;
     text-decoration: none;
-    font-weight: 600;
     cursor: pointer;
+    font-weight: 600;
   }
 
   nav a:hover {
@@ -59,8 +50,6 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    flex-shrink: 0; /* 크기 줄어들지 않도록 */
-    margin-left: auto; /* 가장 오른쪽으로 밀어내기 */
   }
 
   .user-info .icon {
@@ -68,21 +57,6 @@
     height: 36px;
     background-color: white;
     border-radius: 50%;
-  }
-
-  .logout-btn {
-    background: #ff5252;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 8px 16px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-left: 16px;
-  }
-
-  .hidden {
-    display: none;
   }
 
   .container {
@@ -341,7 +315,6 @@
   <div class="user-info">
     <div class="icon"></div>
     <div id="header-user"></div>
-    <button id="logout-btn" class="logout-btn hidden">로그아웃</button>
   </div>
 </header>
 
@@ -385,7 +358,7 @@
     <section class="dorm-section">
       <div class="dorm-header">
         <div>기숙사</div>
-        <div><a href="dormitory.html" style="color:#4f6ef7; text-decoration:none;">더보기 &gt;</a></div>
+        <div><a href="#" style="color:#4f6ef7; text-decoration:none;">더보기 &gt;</a></div>
       </div>
       <div class="dorm-cards">
         <div class="dorm-card" id="selfStudy-card">
@@ -413,6 +386,8 @@ Module.onRuntimeInitialized = function() {
   const getScheduleByClass = Module.cwrap('get_schedule_by_class', 'string', ['number']);
   const getMealJson = Module.cwrap('get_meal_json', 'string', []);
   const getDormStatusJson = Module.cwrap('get_dorm_status_json', 'string', []);
+  const getDayOfWeekString = Module.cwrap('get_day_of_week_string', 'string', ['number']); // C에서 요일 문자열 가져오기
+
   const loginSection = document.getElementById('login-section');
   const mainContent = document.getElementById('main-content');
   const loginStudentIdInput = document.getElementById('login-student-id');
@@ -459,14 +434,10 @@ Module.onRuntimeInitialized = function() {
 
     if (loginResult.status === 'success') {
       loggedInUser = loginResult.user;
-      // 로컬 스토리지에 로그인 정보 저장
-      localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
-
       loginMessageElem.textContent = '';
       loginSection.classList.add('hidden');
       mainContent.classList.remove('hidden');
       headerUser.textContent = loggedInUser.name;
-      logoutBtn.classList.remove('hidden'); // 로그아웃 버튼 표시
 
       renderAll();
     } else {
@@ -474,29 +445,16 @@ Module.onRuntimeInitialized = function() {
     }
   });
 
-  // C 함수 래핑 부분에 추가
-  const getDayOfWeekString = Module.cwrap('get_day_of_week_string', 'string', ['number']);
-
-  // renderSchedule 함수 수정
   function renderSchedule() {
     const scheduleData = JSON.parse(getScheduleByClass(loggedInUser.classId));
-
-    // 현재 날짜와 요일 가져오기
     const today = new Date();
-    const year = today.getFullYear();
-    const month = today.getMonth() + 1; // 0부터 시작하므로 +1
-    const day = today.getDate();
     const dayOfWeekIndex = today.getDay(); // 0: 일, 1: 월, ..., 6: 토
-    const dayOfWeekString = getDayOfWeekString(dayOfWeekIndex);
+    const dayOfWeekString = getDayOfWeekString(dayOfWeekIndex); // C 함수를 통해 요일 문자열 가져오기
 
-    // 날짜 표시 형식 설정 (YYYY.MM.DD)
-    const dateString = `${year}.${month < 10 ? '0' + month : month}.${day < 10 ? '0' + day : day}`;
-
-    document.getElementById('schedule-date').textContent = `${dateString} (${dayOfWeekString}요일)`;
+    document.getElementById('schedule-date').textContent = `${scheduleData.date} (${dayOfWeekString}요일)`;
     const list = document.getElementById('schedule-list');
     list.innerHTML = ''; // 기존 내용 지우기
 
-    // 현재 요일의 시간표만 표시
     const dailySchedule = scheduleData.weekSchedule[dayOfWeekString];
     if (dailySchedule && dailySchedule.length > 0) {
       dailySchedule.forEach(item => {
@@ -561,39 +519,6 @@ Module.onRuntimeInitialized = function() {
   });
 
   mainContent.classList.add('hidden'); // 초기에는 메인 콘텐츠 숨기기
-
-  // 로그아웃 버튼 요소 가져오기
-  const logoutBtn = document.getElementById('logout-btn');
-
-  // 페이지 로드 시 로컬 스토리지에서 로그인 정보 확인
-  function checkLoginStatus() {
-    const savedUser = localStorage.getItem('loggedInUser');
-    if (savedUser) {
-      loggedInUser = JSON.parse(savedUser);
-      loginSection.classList.add('hidden');
-      mainContent.classList.remove('hidden');
-      headerUser.textContent = loggedInUser.name;
-      logoutBtn.classList.remove('hidden');
-      renderAll();
-    }
-  }
-
-  // 페이지 로드 시 로그인 상태 확인
-  checkLoginStatus();
-
-  // 로그아웃 버튼 이벤트 리스너
-  logoutBtn.addEventListener('click', () => {
-    localStorage.removeItem('loggedInUser');
-    loggedInUser = null;
-    headerUser.textContent = '';
-    loginSection.classList.remove('hidden');
-    mainContent.classList.add('hidden');
-    logoutBtn.classList.add('hidden');
-    // 입력 필드 초기화
-    loginStudentIdInput.value = '';
-    loginPasswordInput.value = '';
-    loginMessageElem.textContent = '';
-  });
 };
 </script>
 </body>
