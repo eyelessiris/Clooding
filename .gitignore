@@ -1,3 +1,5 @@
 .gitattributes
 text.txt
 .DS_Store
+*.wasm
+*.data
