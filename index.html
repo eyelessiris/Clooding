@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>플러딩 클론</title>
+<style>
+  body { font-family: 'Noto Sans KR', sans-serif; background:#f5f5f7; margin:20px; }
+  .container { max-width: 900px; margin: auto; }
+  .card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+  h2 { margin-top: 0; }
+  .schedule-item { margin: 5px 0; }
+  .tabs button { margin-right: 10px; padding: 8px 16px; border:none; border-radius: 4px; cursor:pointer; }
+  .tabs button.active { background: #4f6ef7; color: white; }
+  .progress-bar { background: #ddd; border-radius: 10px; overflow: hidden; height: 20px; margin-top: 5px; }
+  .progress { background: #4f6ef7; height: 100%; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="card" id="profile">
+    <h2>프로필</h2>
+    <p id="profile-name"></p>
+    <p id="profile-id"></p>
+  </div>
+
+  <div class="card" id="schedule">
+    <h2>시간표 <span id="schedule-date"></span></h2>
+    <div id="schedule-list"></div>
+  </div>
+
+  <div class="card" id="meal">
+    <h2>급식 <span id="meal-date"></span></h2>
+    <div class="tabs">
+      <button id="btn-breakfast">조식</button>
+      <button id="btn-lunch">중식</button>
+      <button id="btn-dinner" class="active">석식</button>
+    </div>
+    <p id="meal-menu"></p>
+    <p id="meal-calories"></p>
+  </div>
+
+  <div class="card" id="dorm">
+    <h2>기숙사 신청 현황</h2>
+    <div>
+      <strong>자습 신청</strong>
+      <p><span id="selfStudy-current"></span> / <span id="selfStudy-max"></span></p>
+      <div class="progress-bar"><div id="selfStudy-progress" class="progress"></div></div>
+      <p>시작 시간: <span id="selfStudy-start"></span></p>
+    </div>
+    <div style="margin-top:20px;">
+      <strong>안마의자 신청</strong>
+      <p><span id="massageChair-current"></span> / <span id="massageChair-max"></span></p>
+      <div class="progress-bar"><div id="massageChair-progress" class="progress"></div></div>
+      <p>시작 시간: <span id="massageChair-start"></span></p>
+    </div>
+  </div>
+</div>
+
+<script src="main.js"></script>
+<script>
+Module.onRuntimeInitialized = () => {
+  const getScheduleJson = Module.cwrap('get_schedule_json', 'string', []);
+  const getMealJson = Module.cwrap('get_meal_json', 'string', []);
+  const getProfileJson = Module.cwrap('get_profile_json', 'string', []);
+  const getDormStatusJson = Module.cwrap('get_dorm_status_json', 'string', []);
+
+  // 프로필 표시
+  const profile = JSON.parse(getProfileJson());
+  document.getElementById('profile-name').textContent = profile.name;
+  document.getElementById('profile-id').textContent = profile.studentId;
+
+  // 시간표 표시
+  const schedule = JSON.parse(getScheduleJson());
+  document.getElementById('schedule-date').textContent = schedule.date;
+  const scheduleList = document.getElementById('schedule-list');
+  scheduleList.innerHTML = '';
+  schedule.items.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'schedule-item';
+    div.textContent = `${item.period}교시: ${item.subject}`;
+    scheduleList.appendChild(div);
+  });
+
+  // 급식 표시 (초기: 석식)
+  const meal = JSON.parse(getMealJson());
+  document.getElementById('meal-date').textContent = meal.date;
+  document.getElementById('meal-menu').textContent = meal.menu;
+  document.getElementById('meal-calories').textContent = meal.calories + 'Kcal';
+
+  // 급식 탭 버튼 이벤트 (임시 하드코딩)
+  document.getElementById('btn-breakfast').addEventListener('click', () => {
+    alert('조식 데이터는 아직 준비 중입니다.');
+  });
+  document.getElementById('btn-lunch').addEventListener('click', () => {
+    alert('중식 데이터는 아직 준비 중입니다.');
+  });
+  document.getElementById('btn-dinner').addEventListener('click', () => {
+    alert('석식 데이터입니다.');
+  });
+
+  // 기숙사 신청 현황 표시
+  const dorm = JSON.parse(getDormStatusJson());
+
+  function updateProgress(idPrefix, current, max) {
+    document.getElementById(idPrefix + '-current').textContent = current;
+    document.getElementById(idPrefix + '-max').textContent = max;
+    const percent = max === 0 ? 0 : (current / max) * 100;
+    document.getElementById(idPrefix + '-progress').style.width = percent + '%';
+  }
+
+  updateProgress('selfStudy', dorm.selfStudy.current, dorm.selfStudy.max);
+  document.getElementById('selfStudy-start').textContent = dorm.selfStudy.startTime;
+
+  updateProgress('massageChair', dorm.massageChair.current, dorm.massageChair.max);
+  document.getElementById('massageChair-start').textContent = dorm.massageChair.startTime;
+};
+</script>
+</body>
+</html>
