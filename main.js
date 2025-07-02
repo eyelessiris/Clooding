@@ -883,38 +883,49 @@ async function createWasm() {
       }
     };
 
-  var getCFunc = (ident) => {
-      var func = Module['_' + ident]; // closure exported function
-      assert(func, 'Cannot call unknown function ' + ident + ', make sure it is exported');
-      return func;
+  var isLeapYear = (year) => year%4 === 0 && (year%100 !== 0 || year%400 === 0);
+  
+  var MONTH_DAYS_LEAP_CUMULATIVE = [0,31,60,91,121,152,182,213,244,274,305,335];
+  
+  var MONTH_DAYS_REGULAR_CUMULATIVE = [0,31,59,90,120,151,181,212,243,273,304,334];
+  var ydayFromDate = (date) => {
+      var leap = isLeapYear(date.getFullYear());
+      var monthDaysCumulative = (leap ? MONTH_DAYS_LEAP_CUMULATIVE : MONTH_DAYS_REGULAR_CUMULATIVE);
+      var yday = monthDaysCumulative[date.getMonth()] + date.getDate() - 1; // -1 since it's days since Jan 1
+  
+      return yday;
     };
   
-  var writeArrayToMemory = (array, buffer) => {
-      assert(array.length >= 0, 'writeArrayToMemory array must have a length (should be an array or typed array)')
-      HEAP8.set(array, buffer);
-    };
+  var INT53_MAX = 9007199254740992;
   
-  var lengthBytesUTF8 = (str) => {
-      var len = 0;
-      for (var i = 0; i < str.length; ++i) {
-        // Gotcha: charCodeAt returns a 16-bit word that is a UTF-16 encoded code
-        // unit, not a Unicode code point of the character! So decode
-        // UTF16->UTF32->UTF8.
-        // See http://unicode.org/faq/utf_bom.html#utf16-3
-        var c = str.charCodeAt(i); // possibly a lead surrogate
-        if (c <= 0x7F) {
-          len++;
-        } else if (c <= 0x7FF) {
-          len += 2;
-        } else if (c >= 0xD800 && c <= 0xDFFF) {
-          len += 4; ++i;
-        } else {
-          len += 3;
-        }
-      }
-      return len;
-    };
+  var INT53_MIN = -9007199254740992;
+  var bigintToI53Checked = (num) => (num < INT53_MIN || num > INT53_MAX) ? NaN : Number(num);
+  function __localtime_js(time, tmPtr) {
+    time = bigintToI53Checked(time);
   
+  
+      var date = new Date(time*1000);
+      HEAP32[((tmPtr)>>2)] = date.getSeconds();
+      HEAP32[(((tmPtr)+(4))>>2)] = date.getMinutes();
+      HEAP32[(((tmPtr)+(8))>>2)] = date.getHours();
+      HEAP32[(((tmPtr)+(12))>>2)] = date.getDate();
+      HEAP32[(((tmPtr)+(16))>>2)] = date.getMonth();
+      HEAP32[(((tmPtr)+(20))>>2)] = date.getFullYear()-1900;
+      HEAP32[(((tmPtr)+(24))>>2)] = date.getDay();
+  
+      var yday = ydayFromDate(date)|0;
+      HEAP32[(((tmPtr)+(28))>>2)] = yday;
+      HEAP32[(((tmPtr)+(36))>>2)] = -(date.getTimezoneOffset() * 60);
+  
+      // Attention: DST is in December in South, and some regions don't have DST at all.
+      var start = new Date(date.getFullYear(), 0, 1);
+      var summerOffset = new Date(date.getFullYear(), 6, 1).getTimezoneOffset();
+      var winterOffset = start.getTimezoneOffset();
+      var dst = (summerOffset != winterOffset && date.getTimezoneOffset() == Math.min(winterOffset, summerOffset))|0;
+      HEAP32[(((tmPtr)+(32))>>2)] = dst;
+    ;
+  }
+
   var stringToUTF8Array = (str, heap, outIdx, maxBytesToWrite) => {
       assert(typeof str === 'string', `stringToUTF8Array expects a string (got ${typeof str})`);
       // Parameter maxBytesToWrite is not optional. Negative values, 0, null,
@@ -961,6 +972,94 @@ async function createWasm() {
       assert(typeof maxBytesToWrite == 'number', 'stringToUTF8(str, outPtr, maxBytesToWrite) is missing the third parameter that specifies the length of the output buffer!');
       return stringToUTF8Array(str, HEAPU8, outPtr, maxBytesToWrite);
     };
+  
+  var lengthBytesUTF8 = (str) => {
+      var len = 0;
+      for (var i = 0; i < str.length; ++i) {
+        // Gotcha: charCodeAt returns a 16-bit word that is a UTF-16 encoded code
+        // unit, not a Unicode code point of the character! So decode
+        // UTF16->UTF32->UTF8.
+        // See http://unicode.org/faq/utf_bom.html#utf16-3
+        var c = str.charCodeAt(i); // possibly a lead surrogate
+        if (c <= 0x7F) {
+          len++;
+        } else if (c <= 0x7FF) {
+          len += 2;
+        } else if (c >= 0xD800 && c <= 0xDFFF) {
+          len += 4; ++i;
+        } else {
+          len += 3;
+        }
+      }
+      return len;
+    };
+  var __tzset_js = (timezone, daylight, std_name, dst_name) => {
+      // TODO: Use (malleable) environment variables instead of system settings.
+      var currentYear = new Date().getFullYear();
+      var winter = new Date(currentYear, 0, 1);
+      var summer = new Date(currentYear, 6, 1);
+      var winterOffset = winter.getTimezoneOffset();
+      var summerOffset = summer.getTimezoneOffset();
+  
+      // Local standard timezone offset. Local standard time is not adjusted for
+      // daylight savings.  This code uses the fact that getTimezoneOffset returns
+      // a greater value during Standard Time versus Daylight Saving Time (DST).
+      // Thus it determines the expected output during Standard Time, and it
+      // compares whether the output of the given date the same (Standard) or less
+      // (DST).
+      var stdTimezoneOffset = Math.max(winterOffset, summerOffset);
+  
+      // timezone is specified as seconds west of UTC ("The external variable
+      // `timezone` shall be set to the difference, in seconds, between
+      // Coordinated Universal Time (UTC) and local standard time."), the same
+      // as returned by stdTimezoneOffset.
+      // See http://pubs.opengroup.org/onlinepubs/009695399/functions/tzset.html
+      HEAPU32[((timezone)>>2)] = stdTimezoneOffset * 60;
+  
+      HEAP32[((daylight)>>2)] = Number(winterOffset != summerOffset);
+  
+      var extractZone = (timezoneOffset) => {
+        // Why inverse sign?
+        // Read here https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getTimezoneOffset
+        var sign = timezoneOffset >= 0 ? "-" : "+";
+  
+        var absOffset = Math.abs(timezoneOffset)
+        var hours = String(Math.floor(absOffset / 60)).padStart(2, "0");
+        var minutes = String(absOffset % 60).padStart(2, "0");
+  
+        return `UTC${sign}${hours}${minutes}`;
+      }
+  
+      var winterName = extractZone(winterOffset);
+      var summerName = extractZone(summerOffset);
+      assert(winterName);
+      assert(summerName);
+      assert(lengthBytesUTF8(winterName) <= 16, `timezone name truncated to fit in TZNAME_MAX (${winterName})`);
+      assert(lengthBytesUTF8(summerName) <= 16, `timezone name truncated to fit in TZNAME_MAX (${summerName})`);
+      if (summerOffset < winterOffset) {
+        // Northern hemisphere
+        stringToUTF8(winterName, std_name, 17);
+        stringToUTF8(summerName, dst_name, 17);
+      } else {
+        stringToUTF8(winterName, dst_name, 17);
+        stringToUTF8(summerName, std_name, 17);
+      }
+    };
+
+  var _emscripten_date_now = () => Date.now();
+
+  var getCFunc = (ident) => {
+      var func = Module['_' + ident]; // closure exported function
+      assert(func, 'Cannot call unknown function ' + ident + ', make sure it is exported');
+      return func;
+    };
+  
+  var writeArrayToMemory = (array, buffer) => {
+      assert(array.length >= 0, 'writeArrayToMemory array must have a length (should be an array or typed array)')
+      HEAP8.set(array, buffer);
+    };
+  
+  
   
   var stackAlloc = (sz) => __emscripten_stack_alloc(sz);
   var stringToUTF8OnStack = (str) => {
@@ -1169,7 +1268,6 @@ Module['FS_createPreloadedFile'] = FS.createPreloadedFile;
   'convertI32PairToI53',
   'convertI32PairToI53Checked',
   'convertU32PairToI53',
-  'bigintToI53Checked',
   'getTempRet0',
   'setTempRet0',
   'zeroMemory',
@@ -1302,8 +1400,6 @@ Module['FS_createPreloadedFile'] = FS.createPreloadedFile;
   'ExceptionInfo',
   'findMatchingCatch',
   'Browser_asyncPrepareDataCounter',
-  'isLeapYear',
-  'ydayFromDate',
   'arraySum',
   'addDays',
   'getSocketFromFD',
@@ -1370,6 +1466,7 @@ missingLibrarySymbols.forEach(missingLibrarySymbol)
   'checkStackCookie',
   'INT53_MAX',
   'INT53_MIN',
+  'bigintToI53Checked',
   'stackSave',
   'stackRestore',
   'stackAlloc',
@@ -1427,6 +1524,8 @@ missingLibrarySymbols.forEach(missingLibrarySymbol)
   'MONTH_DAYS_LEAP',
   'MONTH_DAYS_REGULAR_CUMULATIVE',
   'MONTH_DAYS_LEAP_CUMULATIVE',
+  'isLeapYear',
+  'ydayFromDate',
   'SYSCALLS',
   'preloadPlugins',
   'FS_stdin_getChar_buffer',
@@ -1579,13 +1678,21 @@ unexportedSymbols.forEach(unexportedRuntimeSymbol);
 function checkIncomingModuleAPI() {
   ignoredModuleProp('fetchSettings');
 }
+function apply_self_study_js(studentId,name) { const jsName = UTF8ToString(name); fetch("http://localhost:3000/apply/self-study", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ studentId: studentId, name: jsName }), }).then(res => res.json()) .then(data => { alert(data.message); }) .catch(() => { alert("서버 연결에 실패했습니다."); }); }
+function apply_massage_chair_js(studentId,name) { const jsName = UTF8ToString(name); fetch("http://localhost:3000/apply/massage-chair", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ studentId: studentId, name: jsName }), }).then(res => res.json()) .then(data => { alert(data.message); }) .catch(() => { alert("서버 연결에 실패했습니다."); }); }
 
 // Imports from the Wasm binary.
 var _login_user = Module['_login_user'] = makeInvalidEarlyAccess('_login_user');
 var _get_schedule_by_class = Module['_get_schedule_by_class'] = makeInvalidEarlyAccess('_get_schedule_by_class');
 var _get_meal_json = Module['_get_meal_json'] = makeInvalidEarlyAccess('_get_meal_json');
-var _get_dorm_status_json = Module['_get_dorm_status_json'] = makeInvalidEarlyAccess('_get_dorm_status_json');
 var _get_day_of_week_string = Module['_get_day_of_week_string'] = makeInvalidEarlyAccess('_get_day_of_week_string');
+var _get_self_study_count = Module['_get_self_study_count'] = makeInvalidEarlyAccess('_get_self_study_count');
+var _get_massage_chair_count = Module['_get_massage_chair_count'] = makeInvalidEarlyAccess('_get_massage_chair_count');
+var _get_dorm_status_json = Module['_get_dorm_status_json'] = makeInvalidEarlyAccess('_get_dorm_status_json');
+var _get_self_study_applicants_json = Module['_get_self_study_applicants_json'] = makeInvalidEarlyAccess('_get_self_study_applicants_json');
+var _get_massage_chair_applicants_json = Module['_get_massage_chair_applicants_json'] = makeInvalidEarlyAccess('_get_massage_chair_applicants_json');
+var _apply_self_study = Module['_apply_self_study'] = makeInvalidEarlyAccess('_apply_self_study');
+var _apply_massage_chair = Module['_apply_massage_chair'] = makeInvalidEarlyAccess('_apply_massage_chair');
 var _fflush = makeInvalidEarlyAccess('_fflush');
 var _emscripten_stack_get_end = makeInvalidEarlyAccess('_emscripten_stack_get_end');
 var _emscripten_stack_get_base = makeInvalidEarlyAccess('_emscripten_stack_get_base');
@@ -1599,8 +1706,14 @@ function assignWasmExports(wasmExports) {
   Module['_login_user'] = _login_user = createExportWrapper('login_user', 2);
   Module['_get_schedule_by_class'] = _get_schedule_by_class = createExportWrapper('get_schedule_by_class', 1);
   Module['_get_meal_json'] = _get_meal_json = createExportWrapper('get_meal_json', 0);
-  Module['_get_dorm_status_json'] = _get_dorm_status_json = createExportWrapper('get_dorm_status_json', 0);
   Module['_get_day_of_week_string'] = _get_day_of_week_string = createExportWrapper('get_day_of_week_string', 1);
+  Module['_get_self_study_count'] = _get_self_study_count = createExportWrapper('get_self_study_count', 0);
+  Module['_get_massage_chair_count'] = _get_massage_chair_count = createExportWrapper('get_massage_chair_count', 0);
+  Module['_get_dorm_status_json'] = _get_dorm_status_json = createExportWrapper('get_dorm_status_json', 0);
+  Module['_get_self_study_applicants_json'] = _get_self_study_applicants_json = createExportWrapper('get_self_study_applicants_json', 0);
+  Module['_get_massage_chair_applicants_json'] = _get_massage_chair_applicants_json = createExportWrapper('get_massage_chair_applicants_json', 0);
+  Module['_apply_self_study'] = _apply_self_study = createExportWrapper('apply_self_study', 2);
+  Module['_apply_massage_chair'] = _apply_massage_chair = createExportWrapper('apply_massage_chair', 2);
   _fflush = createExportWrapper('fflush', 1);
   _emscripten_stack_get_end = wasmExports['emscripten_stack_get_end'];
   _emscripten_stack_get_base = wasmExports['emscripten_stack_get_base'];
@@ -1611,7 +1724,16 @@ function assignWasmExports(wasmExports) {
   _emscripten_stack_get_current = wasmExports['emscripten_stack_get_current'];
 }
 var wasmImports = {
-  
+  /** @export */
+  _localtime_js: __localtime_js,
+  /** @export */
+  _tzset_js: __tzset_js,
+  /** @export */
+  apply_massage_chair_js,
+  /** @export */
+  apply_self_study_js,
+  /** @export */
+  emscripten_date_now: _emscripten_date_now
 };
 var wasmExports;
 createWasm();

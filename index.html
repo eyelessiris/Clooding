@@ -13,7 +13,6 @@
     font-size: 18px;
     line-height: 1.6;
   }
-
   header {
     display: flex;
     align-items: center;
@@ -21,55 +20,44 @@
     background-color: #4f6ef7;
     color: white;
     box-sizing: border-box;
-    position: relative; /* 자식 요소의 absolute 위치 기준이 됨 */
+    position: relative;
   }
-
   .logo {
     font-weight: 700;
     font-size: 32px;
-    flex-shrink: 0; /* 크기 줄어들지 않도록 */
-    /* 로고는 왼쪽 끝에 자연스럽게 위치 */
+    flex-shrink: 0;
+    cursor: pointer;
   }
-
   nav {
-    /* 이 부분이 메뉴를 정중앙에 배치하는 핵심 */
-    position: absolute;   /* flex 흐름에서 제외하고 절대 위치 지정 */
-    left: 50%;            /* 부모(header)의 50% 지점으로 이동 */
-    transform: translateX(-50%); /* 자신의 너비의 절반만큼 왼쪽으로 이동하여 정확히 중앙 정렬 */
-
-    display: flex;        /* 메뉴 아이템들은 여전히 flex로 정렬 */
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
     gap: 32px;
     font-size: 24px;
-    /* flex: 1; 같은 속성은 이제 필요 없음 */
   }
-
-
   nav a {
     color: white;
     text-decoration: none;
     font-weight: 600;
     cursor: pointer;
   }
-
   nav a:hover {
     text-decoration: underline;
   }
-
   .user-info {
     display: flex;
     align-items: center;
     gap: 16px;
-    flex-shrink: 0; /* 크기 줄어들지 않도록 */
-    margin-left: auto; /* 가장 오른쪽으로 밀어내기 */
+    flex-shrink: 0;
+    margin-left: auto;
   }
-
   .user-info .icon {
-    width: 36px;
-    height: 36px;
+    width: 48px;
+    height: 48px;
     background-color: white;
     border-radius: 50%;
   }
-
   .logout-btn {
     background: #ff5252;
     color: white;
@@ -80,17 +68,14 @@
     cursor: pointer;
     margin-left: 16px;
   }
-
   .hidden {
     display: none;
   }
-
   .container {
     max-width: 1200px;
     margin: 32px auto;
     padding: 0 32px;
   }
-
   .card {
     background: white;
     border-radius: 16px;
@@ -98,18 +83,15 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     margin-bottom: 32px;
   }
-
   #login-section {
     max-width: 400px;
     margin: 80px auto;
     padding: 40px;
   }
-
   #login-section h2 {
     font-size: 28px;
     margin-bottom: 24px;
   }
-
   #login-section input, #login-section button {
     width: 100%;
     padding: 16px;
@@ -119,11 +101,9 @@
     font-size: 18px;
     box-sizing: border-box;
   }
-
   #login-section input.error {
     border-color: red;
   }
-
   #login-section button {
     background: #4f6ef7;
     color: white;
@@ -132,60 +112,48 @@
     font-weight: 600;
     font-size: 18px;
   }
-
   #login-message {
     color: red;
     font-size: 16px;
     margin-top: -12px;
     margin-bottom: 16px;
   }
-
-  .hidden { display: none; }
-
   .top-cards {
     display: flex;
     gap: 32px;
     margin-bottom: 40px;
   }
-
   .schedule-card, .meal-card { flex: 1; }
-
   .profile-card {
     flex: 0 0 240px;
     text-align: center;
   }
-
   h3 {
     font-size: 24px;
     margin-top: 0;
     margin-bottom: 24px;
   }
-
   .profile-avatar {
-    width: 100px;
-    height: 100px;
+    width: 200px;
+    height: 200px;
     background: #4f6ef7;
     border-radius: 50%;
     margin: 0 auto 24px;
   }
-
   .profile-name {
     font-weight: 700;
-    font-size: 24px;
+    font-size: 48px;
     margin-bottom: 8px;
   }
-
   .profile-id {
     color: #888;
-    font-size: 18px;
+    font-size: 24px;
   }
-
   .schedule-list {
     background: #f9f9fb;
     border-radius: 12px;
     padding: 24px;
   }
-
   .schedule-item {
     display: flex;
     gap: 16px;
@@ -193,21 +161,17 @@
     color: #555;
     margin-bottom: 16px;
   }
-
   .period {
     width: 60px;
     font-weight: 600;
     color: #888;
   }
-
   .subject { flex: 1; }
-
   .meal-tabs {
     display: flex;
     gap: 16px;
     margin-bottom: 24px;
   }
-
   .meal-tab {
     flex: 1;
     text-align: center;
@@ -220,12 +184,10 @@
     user-select: none;
     font-size: 18px;
   }
-
   .meal-tab.active {
     background: #4f6ef7;
     color: white;
   }
-
   .meal-content {
     background: #f9f9fb;
     border-radius: 12px;
@@ -235,19 +197,16 @@
     position: relative;
     font-size: 18px;
   }
-
   .empty {
     text-align: center;
     color: #aaa;
     font-size: 18px;
     margin: 20px 0;
   }
-
   #meal-menu {
     margin-bottom: 24px;
     font-size: 18px;
   }
-
   .meal-calories {
     position: absolute;
     bottom: 16px;
@@ -255,25 +214,21 @@
     font-size: 16px;
     color: #aaa;
   }
-
   .dorm-section {
     margin-top: 60px;
   }
-
   .dorm-header {
     font-weight: 700;
-    font-size: 24px;
+    font-size: 36px;
     margin-bottom: 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
-
   .dorm-cards {
     display: flex;
     gap: 32px;
   }
-
   .dorm-card {
     background: white;
     border-radius: 16px;
@@ -282,23 +237,20 @@
     flex: 1;
     text-align: center;
     position: relative;
-    min-height: 160px;
+    min-height: 240px;
   }
-
   .empty-message {
     color: #999;
     font-size: 18px;
     text-align: center;
     margin-top: 40px;
   }
-
   .count-info {
     font-weight: 700;
     font-size: 36px;
     margin-top: 20px;
     text-align: right;
   }
-
   .progress-bar {
     background: #e0e0ff;
     border-radius: 12px;
@@ -306,36 +258,47 @@
     overflow: hidden;
     margin-top: 16px;
   }
-
   .progress-fill {
     background: #4f6ef7;
     height: 100%;
     width: 0%;
     transition: width 0.3s ease;
   }
-
   .dorm-card button {
     position: absolute;
     bottom: 24px;
     right: 24px;
-    background: #a0a0a0;
+    background: #4f6ef7;
     border: none;
     border-radius: 8px;
     color: white;
     font-weight: 600;
     padding: 14px 28px;
-    cursor: not-allowed;
+    cursor: pointer;
     font-size: 18px;
+  }
+  .dorm-card button:disabled {
+    background: #a0a0a0;
+    cursor: not-allowed;
+  }
+  #selfStudy-applicant-list, #massageChair-applicant-list {
+    margin-top: 20px;
+    max-height: 130px;
+    overflow-y: auto;
+    text-align: left;
+    font-size: 16px;
+    border-top: 1px solid #ccc;
+    padding-top: 12px;
+  }
+  #selfStudy-applicant-list li, #massageChair-applicant-list li {
+    padding: 2px 0;
+    border-bottom: 1px solid #eee;
   }
 </style>
 </head>
 <body>
 <header>
-  <div class="logo">클러딩</div>
-  <nav>
-    <a href="dormitory.html">기숙사</a>
-    <a href="homebase.html">홈베이스</a>
-  </nav>
+  <div class="logo" onclick="location.href='/'">클러딩</div>
   <div class="user-info">
     <div class="icon"></div>
     <div id="header-user"></div>
@@ -355,16 +318,16 @@
   <section id="main-content" class="hidden">
     <div class="top-cards">
       <section class="card schedule-card">
-        <h3>시간표 <span id="schedule-date"></span></h3>
+        <h3><span id="schedule-date"></span> 시간표</h3>
         <div id="schedule-list" class="schedule-list"></div>
       </section>
 
       <section class="card meal-card">
-        <h3>급식 <span id="meal-date"></span></h3>
+        <h3><span id="meal-date"></span> 급식</h3>
         <div class="meal-tabs">
           <div class="meal-tab" data-type="breakfast">조식</div>
-          <div class="meal-tab" data-type="lunch">중식</div>
-          <div class="meal-tab active" data-type="dinner">석식</div>
+          <div class="meal-tab active" data-type="lunch">중식</div>
+          <div class="meal-tab" data-type="dinner">석식</div>
         </div>
         <div id="meal-content" class="meal-content">
           <div class="empty">오늘은 급식이 없습니다.</div>
@@ -383,20 +346,25 @@
     <section class="dorm-section">
       <div class="dorm-header">
         <div>기숙사</div>
-        <div><a href="dormitory.html" style="color:#4f6ef7; text-decoration:none;">더보기 &gt;</a></div>
       </div>
+      <div style="font-size: 28px; font-weight: 700; margin-bottom: 12px;">자습실</div>
       <div class="dorm-cards">
         <div class="dorm-card" id="selfStudy-card">
-          <div class="empty-message" id="selfStudy-empty">신청자가 없습니다.</div>
-          <div id="selfStudy-count" class="count-info">0/50</div>
+          <div id="selfStudy-empty" class="empty-message">신청자가 없습니다.</div>
+          <div id="selfStudy-applicants" class="count-info">0/50</div>
           <div class="progress-bar"><div id="selfStudy-progress" class="progress-fill"></div></div>
-          <button disabled>20시 00분 시작</button>
+          <button id="selfStudy-apply-btn" disabled>신청</button>
+          <button id="selfStudy-cancel-btn" class="hidden">취소</button>
+
+          <ul id="selfStudy-applicant-list"></ul>
         </div>
         <div class="dorm-card" id="massageChair-card">
           <div class="empty-message" id="massageChair-empty">신청자가 없습니다.</div>
           <div id="massageChair-count" class="count-info">0/5</div>
           <div class="progress-bar"><div id="massageChair-progress" class="progress-fill"></div></div>
-          <button disabled>20시 20분 시작</button>
+          <button id="massageChair-apply-btn" disabled>신청</button>
+          <button id="massageChair-cancel-btn" class="hidden">취소</button>
+          <ul id="massageChair-applicant-list"></ul>
         </div>
       </div>
     </section>
@@ -405,96 +373,108 @@
 
 <script src="main.js"></script>
 <script>
-window.Module = window.Module || {};
+const API_BASE = 'http://localhost:3000';
+window.loggedInUser = null;
+
+function getConfigKeyFromType(type) {
+  switch(type) {
+    case 'self-study': return 'selfStudy';
+    case 'massage-chair': return 'massageChair';
+    default: return null;
+  }
+}
+
+const meal = {
+  breakfast: {
+    menu: `친환경백미밥
+맑은콩나물국
+참치김치볶음
+아몬드잔멸치볶음
+함박스테이크어린잎발사믹
+배추김치
+21곡크림치즈롤`,
+    calories: 550
+  },
+  lunch: {
+    menu: `10곡잡곡밥
+양지육개장
+머위대들깨무침
+오리불고기
+배추김치
+자두
+모짜렐라핫도그케첩`,
+    calories: 650
+  },
+  dinner: {
+    menu: `찰흑미밥
+돼지등뼈감자탕
+콩나물무침
+골뱅이소면무침
+비엔나미트볼강정소스볶음
+깍두기
+골드키위`,
+    calories: 700
+  }
+};
+
+
 Module.onRuntimeInitialized = function() {
   const loginUser = Module.cwrap('login_user', 'string', ['number', 'string']);
   const getScheduleByClass = Module.cwrap('get_schedule_by_class', 'string', ['number']);
   const getMealJson = Module.cwrap('get_meal_json', 'string', []);
   const getDormStatusJson = Module.cwrap('get_dorm_status_json', 'string', []);
-  const loginSection = document.getElementById('login-section');
-  const mainContent = document.getElementById('main-content');
-  const loginStudentIdInput = document.getElementById('login-student-id');
-  const loginPasswordInput = document.getElementById('login-password');
-  const loginSubmitBtn = document.getElementById('login-submit-btn');
-  const loginMessageElem = document.getElementById('login-message');
-  const headerUser = document.getElementById('header-user');
-
-  let loggedInUser = null;
-
-  function clearInputErrors() {
-    loginStudentIdInput.classList.remove('error');
-    loginPasswordInput.classList.remove('error');
-    loginMessageElem.textContent = '';
-  }
-
-  loginSubmitBtn.addEventListener('click', () => {
-    clearInputErrors();
-    const studentIdRaw = loginStudentIdInput.value.trim();
-    const passwordRaw = loginPasswordInput.value.trim();
-
-    if (!studentIdRaw || !passwordRaw) {
-      loginMessageElem.textContent = '모든 항목을 입력해주세요.';
-      if (!studentIdRaw) loginStudentIdInput.classList.add('error');
-      if (!passwordRaw) loginPasswordInput.classList.add('error');
-      return;
-    }
-
-    const studentId = Number(studentIdRaw);
-    if (isNaN(studentId)) {
-      loginMessageElem.textContent = '학번은 숫자만 입력 가능합니다.';
-      loginStudentIdInput.classList.add('error');
-      return;
-    }
-
-    const loginResultJson = loginUser(studentId, passwordRaw);
-    let loginResult;
-    try {
-      loginResult = JSON.parse(loginResultJson);
-    } catch (e) {
-      loginMessageElem.textContent = '로그인 처리 중 오류가 발생했습니다.';
-      return;
-    }
-
-    if (loginResult.status === 'success') {
-      loggedInUser = loginResult.user;
-      // 로컬 스토리지에 로그인 정보 저장
-      localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
-
-      loginMessageElem.textContent = '';
-      loginSection.classList.add('hidden');
-      mainContent.classList.remove('hidden');
-      headerUser.textContent = loggedInUser.name;
-      logoutBtn.classList.remove('hidden'); // 로그아웃 버튼 표시
-
-      renderAll();
-    } else {
-      loginMessageElem.textContent = loginResult.message;
-    }
-  });
-
-  // C 함수 래핑 부분에 추가
   const getDayOfWeekString = Module.cwrap('get_day_of_week_string', 'string', ['number']);
 
-  // renderSchedule 함수 수정
-  function renderSchedule() {
-    const scheduleData = JSON.parse(getScheduleByClass(loggedInUser.classId));
+  const elements = {
+    loginSection: document.getElementById('login-section'),
+    mainContent: document.getElementById('main-content'),
+    loginStudentIdInput: document.getElementById('login-student-id'),
+    loginPasswordInput: document.getElementById('login-password'),
+    loginSubmitBtn: document.getElementById('login-submit-btn'),
+    loginMessageElem: document.getElementById('login-message'),
+    headerUser: document.getElementById('header-user'),
+    logoutBtn: document.getElementById('logout-btn'),
+    selfStudy: {
+      emptyElem: document.getElementById('selfStudy-empty'),
+      countElem: document.getElementById('selfStudy-applicants'),
+      progressElem: document.getElementById('selfStudy-progress'),
+      applyBtn: document.getElementById('selfStudy-apply-btn'),
+      cancelBtn: document.getElementById('selfStudy-cancel-btn'),
+      listElem: document.getElementById('selfStudy-applicant-list'),
+      maxCount: 50
+    },
+    massageChair: {
+      emptyElem: document.getElementById('massageChair-empty'),
+      countElem: document.getElementById('massageChair-count'),
+      progressElem: document.getElementById('massageChair-progress'),
+      applyBtn: document.getElementById('massageChair-apply-btn'),
+      cancelBtn: document.getElementById('massageChair-cancel-btn'),
+      listElem: document.getElementById('massageChair-applicant-list'),
+      maxCount: 5
+    }
+  };
 
-    // 현재 날짜와 요일 가져오기
+  function clearInputErrors() {
+    elements.loginStudentIdInput.classList.remove('error');
+    elements.loginPasswordInput.classList.remove('error');
+    elements.loginMessageElem.textContent = '';
+  }
+
+  function renderSchedule() {
+    const scheduleData = JSON.parse(getScheduleByClass(window.loggedInUser.classId));
     const today = new Date();
     const year = today.getFullYear();
-    const month = today.getMonth() + 1; // 0부터 시작하므로 +1
+    const month = today.getMonth() + 1;
     const day = today.getDate();
-    const dayOfWeekIndex = today.getDay(); // 0: 일, 1: 월, ..., 6: 토
+    const dayOfWeekIndex = today.getDay();
     const dayOfWeekString = getDayOfWeekString(dayOfWeekIndex);
 
-    // 날짜 표시 형식 설정 (YYYY.MM.DD)
     const dateString = `${year}.${month < 10 ? '0' + month : month}.${day < 10 ? '0' + day : day}`;
-
     document.getElementById('schedule-date').textContent = `${dateString} (${dayOfWeekString}요일)`;
-    const list = document.getElementById('schedule-list');
-    list.innerHTML = ''; // 기존 내용 지우기
+    document.getElementById('meal-date').textContent = `${dateString} (${dayOfWeekString}요일)`;
 
-    // 현재 요일의 시간표만 표시
+    const list = document.getElementById('schedule-list');
+    list.innerHTML = '';
     const dailySchedule = scheduleData.weekSchedule[dayOfWeekString];
     if (dailySchedule && dailySchedule.length > 0) {
       dailySchedule.forEach(item => {
@@ -509,89 +489,235 @@ Module.onRuntimeInitialized = function() {
   }
 
   function renderMeal() {
-    const mealJson = getMealJson();
-    const meal = JSON.parse(mealJson);
-    document.getElementById('meal-date').textContent = meal.date;
     const content = document.getElementById('meal-content');
     const mealMenuElem = document.getElementById('meal-menu');
-    if (meal.menu === "오늘은 급식이 없습니다.") {
+    const selectedType = document.querySelector('.meal-tab.active').dataset.type;
+
+    const selectedMeal = meal[selectedType];
+
+    if (!selectedMeal || selectedMeal.menu === "오늘은 급식이 없습니다.") {
       content.querySelector('.empty').style.display = 'block';
-      mealMenuElem.textContent = '';
+      mealMenuElem.innerHTML = '';
       document.getElementById('meal-calories').textContent = '0Kcal';
     } else {
       content.querySelector('.empty').style.display = 'none';
-      mealMenuElem.textContent = meal.menu;
-      document.getElementById('meal-calories').textContent = meal.calories + 'Kcal';
+      mealMenuElem.innerHTML = selectedMeal.menu.replace(/\n/g, '<br>');
+      document.getElementById('meal-calories').textContent = selectedMeal.calories + 'Kcal';
     }
   }
+  
+
+  document.querySelectorAll('.meal-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      // 모든 탭에서 active 제거
+      document.querySelectorAll('.meal-tab').forEach(t => t.classList.remove('active'));
+      // 클릭한 탭에 active 추가
+      tab.classList.add('active');
+      // 선택된 탭에 맞게 급식 내용 다시 렌더링
+      renderMeal();
+    });
+  });
+
 
   function renderProfile() {
-    document.getElementById('profile-name').textContent = loggedInUser.name;
-    document.getElementById('profile-id').textContent = loggedInUser.studentId;
+    document.getElementById('profile-name').textContent = window.loggedInUser.name;
+    document.getElementById('profile-id').textContent = window.loggedInUser.studentId;
   }
 
   function renderDorm() {
     const dormJson = getDormStatusJson();
-    const dorm = JSON.parse(dormJson);
-
-    const selfStudyCount = dorm.selfStudy.current + '/' + dorm.selfStudy.max;
-    document.getElementById('selfStudy-count').textContent = selfStudyCount;
-    document.getElementById('selfStudy-progress').style.width = (dorm.selfStudy.current / dorm.selfStudy.max * 100) + '%';
-
-    const massageChairCount = dorm.massageChair.current + '/' + dorm.massageChair.max;
-    document.getElementById('massageChair-count').textContent = massageChairCount;
-    document.getElementById('massageChair-progress').style.width = (dorm.massageChair.current / dorm.massageChair.max * 100) + '%';
+    JSON.parse(dormJson);
   }
+
+  async function loadApplicantsGeneric(type, config) {
+    if (!window.loggedInUser) {
+      config.applyBtn.classList.add('hidden');
+      config.cancelBtn.classList.add('hidden');
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/applicants/${type}`);
+      if (!res.ok) throw new Error(`${type} 신청자 목록 불러오기 실패`);
+
+      const applicants = await res.json();
+      const currentCount = applicants.length;
+      const maxCount = config.maxCount;
+      config.countElem.textContent = `${currentCount}/${maxCount}`;
+      const progressRatio = currentCount / maxCount;
+      config.progressElem.style.width = `${Math.min(progressRatio * 100, 100)}%`;
+
+      if (currentCount === 0) {
+        config.emptyElem.style.display = 'block';
+        config.listElem.innerHTML = '';
+      } else {
+        config.emptyElem.style.display = 'none';
+        config.listElem.innerHTML = applicants.map(a => `<li>${a.name} (${a.studentId})</li>`).join('');
+      }
+
+      const hasApplied = applicants.some(a => a.studentId === window.loggedInUser.studentId);
+      if (hasApplied) {
+        config.applyBtn.classList.add('hidden');
+        config.cancelBtn.classList.remove('hidden');
+      } else {
+        config.applyBtn.classList.remove('hidden');
+        config.cancelBtn.classList.add('hidden');
+        config.applyBtn.disabled = currentCount >= maxCount;
+      }
+    } catch (error) {
+      console.error(`신청자 목록 불러오기 오류 (${type}):`, error);
+      config.applyBtn.classList.add('hidden');
+      config.cancelBtn.classList.add('hidden');
+    }
+  }
+
+  async function applyDorm(type) {
+    if (!window.loggedInUser) return;
+
+    try {
+      const res = await fetch(`${API_BASE}/apply/${type}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(window.loggedInUser)
+      });
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || '신청 실패');
+      }
+
+      alert('신청 성공!');
+
+      // 매핑 함수 또는 객체를 사용해 올바른 config 얻기
+      const configKey = getConfigKeyFromType(type);
+      // const configKey = typeToElementKey[type];
+      if (configKey) {
+        await loadApplicantsGeneric(type, elements[configKey]);
+      }
+    } catch (e) {
+      alert('신청 중 오류가 발생했습니다: ' + e.message);
+      console.error(`신청 오류 (${type}):`, e);
+    }
+  }
+
+  async function cancelDorm(type) {
+    if (!window.loggedInUser) return;
+
+    try {
+      const res = await fetch(`${API_BASE}/apply/${type}?studentId=${window.loggedInUser.studentId}`, {
+        method: 'DELETE'
+      });
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || '취소 실패');
+      }
+
+      alert('취소 성공!');
+
+      const configKey = getConfigKeyFromType(type);
+      // const configKey = typeToElementKey[type];
+      if (configKey) {
+        await loadApplicantsGeneric(type, elements[configKey]);
+      }
+    } catch (e) {
+      alert('취소 중 오류가 발생했습니다: ' + e.message);
+      console.error(`취소 오류 (${type}):`, e);
+    }
+  }
+
 
   function renderAll() {
     renderSchedule();
     renderMeal();
     renderProfile();
     renderDorm();
+    loadApplicantsGeneric('self-study', elements.selfStudy);
+    loadApplicantsGeneric('massage-chair', elements.massageChair);
   }
 
-  document.querySelectorAll('.meal-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.meal-tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      alert(tab.textContent + ' 데이터는 아직 준비 중입니다.');
-    });
+  elements.loginSubmitBtn.addEventListener('click', async () => {
+    clearInputErrors();
+    const studentIdStr = elements.loginStudentIdInput.value.trim();
+    const passwordStr = elements.loginPasswordInput.value;
+
+    if (!studentIdStr) {
+      elements.loginStudentIdInput.classList.add('error');
+      elements.loginMessageElem.textContent = '학번을 입력해주세요.';
+      return;
+    }
+    if (!passwordStr) {
+      elements.loginPasswordInput.classList.add('error');
+      elements.loginMessageElem.textContent = '비밀번호를 입력해주세요.';
+      return;
+    }
+
+    const studentIdNum = Number(studentIdStr);
+    if (isNaN(studentIdNum)) {
+      elements.loginStudentIdInput.classList.add('error');
+      elements.loginMessageElem.textContent = '학번은 숫자여야 합니다.';
+      return;
+    }
+
+    try {
+      const resultJson = loginUser(studentIdNum, passwordStr);
+      const result = JSON.parse(resultJson);
+
+      if (result.status === 'success') {
+        window.loggedInUser = result.user;
+        localStorage.setItem('loggedInUser', JSON.stringify(window.loggedInUser));
+
+        elements.loginSection.classList.add('hidden');
+        elements.mainContent.classList.remove('hidden');
+        elements.headerUser.textContent = window.loggedInUser.name;
+        elements.logoutBtn.classList.remove('hidden');
+
+        renderAll();
+      } else {
+        elements.loginMessageElem.textContent = '학번 또는 비밀번호가 잘못되었습니다.';
+        elements.loginPasswordInput.value = '';
+        elements.loginStudentIdInput.classList.add('error');
+        elements.loginPasswordInput.classList.add('error');
+      }
+    } catch (e) {
+      elements.loginMessageElem.textContent = '로그인 중 오류가 발생했습니다.';
+      console.error('로그인 오류:', e);
+    }
   });
 
-  mainContent.classList.add('hidden'); // 초기에는 메인 콘텐츠 숨기기
+  elements.logoutBtn.addEventListener('click', () => {
+    window.loggedInUser = null;
+    localStorage.removeItem('loggedInUser');
+    elements.loginStudentIdInput.value = '';
+    elements.loginPasswordInput.value = '';
+    elements.loginMessageElem.textContent = '';
+    elements.loginSection.classList.remove('hidden');
+    elements.mainContent.classList.add('hidden');
+    elements.headerUser.textContent = '';
+    elements.logoutBtn.classList.add('hidden');
+  });
 
-  // 로그아웃 버튼 요소 가져오기
-  const logoutBtn = document.getElementById('logout-btn');
+  elements.selfStudy.applyBtn.addEventListener('click', () => applyDorm('self-study'));
+  elements.selfStudy.cancelBtn.addEventListener('click', () => cancelDorm('self-study'));
+  elements.massageChair.applyBtn.addEventListener('click', () => applyDorm('massage-chair'));
+  elements.massageChair.cancelBtn.addEventListener('click', () => cancelDorm('massage-chair'));
 
-  // 페이지 로드 시 로컬 스토리지에서 로그인 정보 확인
   function checkLoginStatus() {
-    const savedUser = localStorage.getItem('loggedInUser');
-    if (savedUser) {
-      loggedInUser = JSON.parse(savedUser);
-      loginSection.classList.add('hidden');
-      mainContent.classList.remove('hidden');
-      headerUser.textContent = loggedInUser.name;
-      logoutBtn.classList.remove('hidden');
-      renderAll();
+    const savedUserStr = localStorage.getItem('loggedInUser');
+    if (savedUserStr) {
+      try {
+        window.loggedInUser = JSON.parse(savedUserStr);
+        elements.loginSection.classList.add('hidden');
+        elements.mainContent.classList.remove('hidden');
+        elements.headerUser.textContent = window.loggedInUser.name;
+        elements.logoutBtn.classList.remove('hidden');
+        renderAll();
+      } catch (e) {
+        console.error('저장된 로그인 정보 파싱 실패:', e);
+        localStorage.removeItem('loggedInUser');
+      }
     }
   }
 
-  // 페이지 로드 시 로그인 상태 확인
   checkLoginStatus();
-
-  // 로그아웃 버튼 이벤트 리스너
-  logoutBtn.addEventListener('click', () => {
-    localStorage.removeItem('loggedInUser');
-    loggedInUser = null;
-    headerUser.textContent = '';
-    loginSection.classList.remove('hidden');
-    mainContent.classList.add('hidden');
-    logoutBtn.classList.add('hidden');
-    // 입력 필드 초기화
-    loginStudentIdInput.value = '';
-    loginPasswordInput.value = '';
-    loginMessageElem.textContent = '';
-  });
 };
 </script>
 </body>
